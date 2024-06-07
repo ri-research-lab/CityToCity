@@ -2,6 +2,11 @@ import "./style.css";
 import * as THREE from "three";
 import ThreeGlobe from "three-globe";
 import { OrbitControls } from "three/examples/jsm/controls/Orbit";
+import countries from "./files/custom.geo.json";
+import lines from "./files/lines.json";
+import map from "./files/map.json";
+
+
 var rederer, camera, scene, controls, controls;
 
 let mouseX = 0;
@@ -71,8 +76,33 @@ function initGlobe() {
   Globe = new ThreeGlobe({
     waitForGlobeReady: true,
     animateIn: true,
-  });
+  })
+.hexPolygonsData(countries.features)
+.hexPolygonResolution(3)
+.hexPolygonMargin(0.7)
+.showAtmosphere(true)
+.atmosphereColor("#3a228a")
+.atmosphereAltitude(0.25)
 
+setTimeout(()=>{
+    Globe.arcsData(lines.pulls)
+    .arcColor((e) => {
+    return e.status ? "#9cff00" : "#ff4000";
+    })
+    .arcAltitude((e) =>{
+    return e.arcAlt;
+    })
+    .arcStroke((e)=>{
+    return e.status ? 0.5 : 0.3
+    })
+    .arcDashLength(0.9)
+    .arcDashGap(4)
+    .arcDashAnimateTime(1000)
+    .arcsTransitionDuration(1000)
+    .arcDashImitialGap((e) => e.order*1)
+    .labelsData(map.Map)
+    
+}, 1000);
   Globe.rotateY(-Math.PI * (5 / 9));
   Globe.rotateZ(-Math.PI / 6);
   const globeMaterial = Globe.globeMaterial();
@@ -108,4 +138,3 @@ function animate() {
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
     }
-    
