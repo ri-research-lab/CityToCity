@@ -1,6 +1,6 @@
-{
+export const map = {
     "type": "Map",
-    "Co-ordinates": [
+    "maps": [
         {
             "text": "IND",
             "size": 1.0,

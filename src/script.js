@@ -1,10 +1,9 @@
-import "./style.css";
-import * as THREE from "three";
-import ThreeGlobe from "three-globe";
-import { OrbitControls } from "three/examples/jsm/controls/Orbit";
-import countries from "./files/custom.geo.json";
-import lines from "./files/lines.json";
-import map from "./files/map.json";
+import * as THREE from "../node_modules/three";
+import ThreeGlobe from "../node_modules/three-globe";
+import { OrbitControls } from "../node_modules/three/examples/jsm/controls/OrbitControls";
+import countries from "./files/custom.geo";
+import lines from "./files/lines";
+import map from "./files/map";
 
 
 var rederer, camera, scene, controls, controls;
@@ -77,32 +76,43 @@ function initGlobe() {
     waitForGlobeReady: true,
     animateIn: true,
   })
-.hexPolygonsData(countries.features)
-.hexPolygonResolution(3)
-.hexPolygonMargin(0.7)
-.showAtmosphere(true)
-.atmosphereColor("#3a228a")
-.atmosphereAltitude(0.25)
+    .hexPolygonsData(countries.features)
+    .hexPolygonResolution(3)
+    .hexPolygonMargin(0.7)
+    .showAtmosphere(true)
+    .atmosphereColor("#3a228a")
+    .atmosphereAltitude(0.25)
 
-setTimeout(()=>{
+  setTimeout(() => {
     Globe.arcsData(lines.pulls)
-    .arcColor((e) => {
-    return e.status ? "#9cff00" : "#ff4000";
-    })
-    .arcAltitude((e) =>{
-    return e.arcAlt;
-    })
-    .arcStroke((e)=>{
-    return e.status ? 0.5 : 0.3
-    })
-    .arcDashLength(0.9)
-    .arcDashGap(4)
-    .arcDashAnimateTime(1000)
-    .arcsTransitionDuration(1000)
-    .arcDashImitialGap((e) => e.order*1)
-    .labelsData(map.Map)
-    
-}, 1000);
+      .arcColor((e) => {
+        return e.status ? "#9cff00" : "#ff4000";
+      })
+      .arcAltitude((e) => {
+        return e.arcAlt;
+      })
+      .arcStroke((e) => {
+        return e.status ? 0.5 : 0.3
+      })
+      .arcDashLength(0.9)
+      .arcDashGap(4)
+      .arcDashAnimateTime(1000)
+      .arcsTransitionDuration(1000)
+      .arcDashImitialGap((e) => e.order * 1)
+      .labelsData(map.Map)
+      .labelColor(() => "#ffcb21")
+      .labelDotRadius(0.3)
+      .labelSize((e) => e.size)
+      .labelText("city")
+      .labelResolution(6)
+      .labelAltitude(0.01)
+      .pointsData(map.maps)
+      .pointColor(() => "#ffffff")
+      .pointsMerge(true)
+      .pointAltitude(0.07)
+      .pointRadius(0.05);
+  }, 1000);
+  
   Globe.rotateY(-Math.PI * (5 / 9));
   Globe.rotateZ(-Math.PI / 6);
   const globeMaterial = Globe.globeMaterial();
@@ -119,22 +129,22 @@ function onMouseMove(event) {
   mouseY = event.clientY - windowHalfY;
 }
 
-function onWindowResize(){
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    windowHalfX = window.innerWidth / 1.5;
-    windowHalfY = window.innerHeight / 1.5;
-    renderer.setSize(window.innerWidth, window.innerHeight);
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  windowHalfX = window.innerWidth / 1.5;
+  windowHalfY = window.innerHeight / 1.5;
+  renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 function animate() {
-    camera.position.x +=
+  camera.position.x +=
     Math.abs(mouseX) <= windowHalfX / 2
-    ? (mouseX/ 2- camera.position.x) * 0.005
-    : 0;
-    camera.position.y +=(-mouseY/2-camera.position.y)*0.005;
-    camera.lookAt(scene.position);
-    controls.update0;
-    renderer.render(scene, camera);
-    requestAnimationFrame(animate);
-    }
+      ? (mouseX / 2 - camera.position.x) * 0.005
+      : 0;
+  camera.position.y += (-mouseY / 2 - camera.position.y) * 0.005;
+  camera.lookAt(scene.position);
+  controls.update0;
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}

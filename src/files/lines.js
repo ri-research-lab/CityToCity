@@ -1,4 +1,4 @@
-{
+export const lines = {
     "type": "PullRequest",
     "pulls": [
         {
